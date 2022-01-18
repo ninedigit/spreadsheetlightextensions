@@ -1,5 +1,7 @@
 # NineDigit Spread Sheet Light Extensions
 
+[![NuGet version (NineDigit.SpreadSheetLightExtensions)](https://img.shields.io/nuget/v/NineDigit.SpreadSheetLightExtensions)](https://www.nuget.org/packages/NineDigit.SpreadSheetLightExtensions/)
+
 Extensions for the [spreadsheetlight library](http://spreadsheetlight.com/).
 
 ## Fluent cell referencing
