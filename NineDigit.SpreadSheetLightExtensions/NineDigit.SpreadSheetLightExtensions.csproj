@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <LangVersion>8.0</LangVersion>
@@ -6,8 +6,8 @@
     <NoWarn>1591</NoWarn>
 
     <!-- Version -->
-    <Version>1.0.0</Version>
-    <PackageVersion>1.0.0</PackageVersion>
+    <Version>1.0.1</Version>
+    <PackageVersion>1.0.1</PackageVersion>
 
     <!-- NuGet meta -->
     <Company>Nine Digit, s.r.o.</Company>
@@ -19,7 +19,13 @@
     <RepositoryUrl>https://github.com/ninedigit/spreadsheetlightextensions</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <DocumentationFile>$(ProjectDir)$(OutputPath)$(MSBuildProjectName).xml</DocumentationFile>
+	<PackageReadmeFile>README.md</PackageReadmeFile>
+	<PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
+  <ItemGroup>
+    <None Remove="NineDigit.SpreadSheetLightExtensions.xml" />
+	<None Include="$(SolutionDir)README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="SpreadsheetLight" Version="3.5.0" />
@@ -30,4 +36,15 @@
       <_Parameter1>$(MSBuildProjectName).Tests</_Parameter1>
     </AssemblyAttribute>
   </ItemGroup>
+
+  <!-- Release build -->
+  <Target Name="SigningTarget" AfterTargets="CoreBuild" Condition="'$(Configuration)' == 'Release'">
+	<Message Text="[1/2] Assembly signing ..." Importance="high" />
+	<SignFile CertificateThumbprint="5ba440337c490688906059364d1ee0dbb825e110" SigningTarget="$(ProjectDir)$(OutputPath)$(AssemblyName).dll" TimestampUrl="http://timestamp.digicert.com?td=sha256" />
+  </Target>
+
+  <Target Name="SignPackage" AfterTargets="_PackAsBuildAfterTarget" Condition="'$(Configuration)' == 'Release'">
+	<Message Text="[2/2] NuGet package signing ..." Importance="high" />
+	<Exec Command="nuget sign $(ProjectDir)$(OutputPath)..\$(AssemblyName).$(InformationalVersion).nupkg -CertificateFingerprint &quot;5ba440337c490688906059364d1ee0dbb825e110&quot; -Timestamper http://timestamp.digicert.com?td=sha256" />
+  </Target>
 </Project>
